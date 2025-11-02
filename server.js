@@ -44,8 +44,15 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     students: async () => {
-      const { rows } = await pool.query("SELECT * FROM students");
-      return rows;
+      const rows = await pool.query("SELECT * FROM students");
+      return rows.rows.map(r => ({
+        id: r.id,
+        firstName: r.firstname,
+        lastName: r.lastname,
+        email: r.email,
+        age: r.age,
+        major: r.major
+      }));
     },
     breed: async (_, { id }) => {
       const { rows } = await pool.query("SELECT * FROM breeds WHERE id = $1", [id]);
